@@ -11,5 +11,5 @@ public interface ProductDAL {
   List<Product> getAllProducts();
   List<Product> getAllProductsCreatedByLoggedInUser(String userId);
 
-  Product getProductById(String productId);
+  Object getProductById(String productId);
 }

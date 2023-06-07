@@ -71,7 +71,26 @@ public class ProductDALService implements ProductDAL {
   }
 
   @Override
-  public Product getProductById(String productId) {
-    return null;
+  public Object getProductById(String productId) {
+    Product product = null;
+
+    if (
+      databaseUtility.checkIfEntryExistsById(Product.class, productId, "productId")
+    ) {
+      Query query = new Query();
+      query.addCriteria(Criteria.where("productId").is(productId));
+
+      try {
+        product = mongoTemplate.findOne(query, Product.class);
+      }
+      catch (Exception e) {
+        throw e;
+      }
+
+      return product;
+    }
+    else {
+      return "Product does not exist.";
+    }
   }
 }
