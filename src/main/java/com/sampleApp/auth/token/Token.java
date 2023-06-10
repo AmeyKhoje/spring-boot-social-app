@@ -1,5 +1,6 @@
 package com.sampleApp.auth.token;
 
+import com.sampleApp.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,5 @@ public class Token {
 
   public boolean expired;
 
-  public String userId;
+  public User user;
 }

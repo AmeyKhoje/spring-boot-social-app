@@ -11,5 +11,7 @@ public interface UserDAL {
 
   Object getUserById(String id);
 
+  Optional<User> findByEmail(String email);
+
   User create(User user);
 }

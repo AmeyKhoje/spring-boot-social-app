@@ -1,9 +1,11 @@
 package com.sampleApp.models;
 
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("users")
+@Builder
 public class User {
 
   @Id
