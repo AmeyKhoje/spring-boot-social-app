@@ -1,6 +1,7 @@
 package com.sampleApp.dal.implementations;
 
 import com.sampleApp.dal.interfaces.ProductDAL;
+import com.sampleApp.dal.interfaces.UserDAL;
 import com.sampleApp.models.Product;
 import com.sampleApp.models.User;
 import com.sampleApp.utils.DatabaseUtility;
@@ -21,6 +22,9 @@ public class ProductDALService implements ProductDAL {
 
   @Autowired
   private MongoTemplate mongoTemplate;
+
+  @Autowired
+  private UserDALService userDALService;
 
   @Override
   public Product create(Product product) {
