@@ -1,10 +1,14 @@
 package com.sampleApp.controllers;
 
+import com.sampleApp.auth.AuthenticationRequest;
+import com.sampleApp.auth.AuthenticationResponse;
+import com.sampleApp.auth.RegisterRequest;
 import com.sampleApp.dal.implementations.UserDALService;
 import com.sampleApp.dal.interfaces.UserDAL;
 import com.sampleApp.models.User;
 import com.sampleApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +31,8 @@ public class UserController {
   }
 
   @PostMapping("/_new")
-  public User create(User user) {
-    return userDALService.create(user);
+  public ResponseEntity<AuthenticationResponse> create(@RequestBody RegisterRequest request) {
+    return ResponseEntity.ok(userDALService.create(request));
   }
 
   @GetMapping("/_all")

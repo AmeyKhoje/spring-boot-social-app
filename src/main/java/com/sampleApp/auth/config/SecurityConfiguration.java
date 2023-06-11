@@ -27,16 +27,24 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    System.out.println("SecFil");
     httpSecurity
       .csrf(csrf -> csrf.disable())
       .authorizeHttpRequests(
         auth ->
-          auth.requestMatchers("/auth/**")
+          auth.requestMatchers("/auth/**", "/users/_new")
               .permitAll()
               .anyRequest()
               .authenticated()
       )
-      .sessionManagement((Customizer<SessionManagementConfigurer<HttpSecurity>>) authenticationProvider)
+      .sessionManagement(
+        sessionManagement ->
+          sessionManagement.sessionConcurrency(
+            con ->
+              con.maximumSessions(2)
+                  .expiredUrl("/auth/login?expired=true")
+          )
+      )
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
       .logout(logout ->
         logout
@@ -44,6 +52,7 @@ public class SecurityConfiguration {
           .addLogoutHandler(logoutHandler)
           .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
       );
+//    System.out.println(httpSecurity.build().toString());
     return httpSecurity.build();
   }
 }

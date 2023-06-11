@@ -1,5 +1,6 @@
 package com.sampleApp.config;
 
+import com.sampleApp.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,14 +19,14 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-  @Value("${application.security.jwt.secret-key}")
-  private String secretKey;
+//  @Value("${application.security.jwt.secret-key}")
+  private String secretKey = Constants.JWT_SECRET_KEY;
 
-  @Value("#{application.security.jwt.expiration}")
-  private long jwtExpiration;
+//  @Value("#{application.security.jwt.expiration}")
+  private long jwtExpiration = Long.parseLong(Constants.JWT_SECRET_KEY_EXPIRY);
 
-  @Value("${application.security.jwt.refresh-token.expiration}")
-  private long refreshExpiration;
+//  @Value("${application.security.jwt.refresh-token.expiration}")
+  private long refreshExpiration = Long.parseLong(Constants.REFRESH_TOKEN_EXPIRY);
 
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);

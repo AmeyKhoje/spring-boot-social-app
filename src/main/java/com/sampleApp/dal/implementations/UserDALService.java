@@ -1,13 +1,18 @@
 package com.sampleApp.dal.implementations;
 
+import com.sampleApp.auth.AuthenticationRequest;
+import com.sampleApp.auth.AuthenticationResponse;
+import com.sampleApp.auth.RegisterRequest;
 import com.sampleApp.dal.interfaces.UserDAL;
 import com.sampleApp.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +25,7 @@ public class UserDALService implements UserDAL {
 
   private final PasswordEncoder passwordEncoder;
 
-  public UserDALService(PasswordEncoder passwordEncoder) {
+  public UserDALService(@Lazy PasswordEncoder passwordEncoder) {
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -53,17 +58,20 @@ public class UserDALService implements UserDAL {
     else return null;
   }
 
+
+
   @Override
-  public User create(User user) {
+  public AuthenticationResponse create(RegisterRequest request) {
+    System.out.println(request.getEmail());
     User newUser = User.builder()
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName())
-                    .email(user.getEmail())
-                    .mobile(user.getMobile())
-                    .password(passwordEncoder.encode(user.getPassword()))
-                    .city(user.getCity())
+                    .firstName(request.getFirstname())
+                    .lastName(request.getLastname())
+                    .email(request.getEmail())
+                    .mobile(request.getMobile())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .city(request.getCity())
                     .build();
     mongoTemplate.save(newUser);
-    return user; // Object will contain id as well automatically
+    return AuthenticationResponse.builder().build(); // Object will contain id as well automatically
   }
 }

@@ -4,6 +4,7 @@ import com.sampleApp.dal.implementations.ProductDALService;
 import com.sampleApp.dal.interfaces.ProductDAL;
 import com.sampleApp.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,9 @@ public class ProductController {
   }
 
   @GetMapping("/_all")
+  @PreAuthorize("")
   public List<Product> getAllProducts() {
+    System.out.println("Ins");
     return productDAL.getAllProducts();
   }
 

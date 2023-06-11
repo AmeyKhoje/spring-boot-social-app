@@ -9,9 +9,13 @@ import com.sampleApp.models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -23,26 +27,37 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  public AuthenticationResponse register(User user) {
-    User registeredUser = userDALService.create(user);
-    var jwtToken = jwtService.generateToken((UserDetails) registeredUser);
-    var refreshToken = jwtService.generateRefreshToken((UserDetails) registeredUser);
-    saveUserToken(registeredUser, jwtToken);
-
-    return AuthenticationResponse
-            .builder()
-            .accessToken(jwtToken)
-            .refreshToken(refreshToken)
-            .build();
-  }
+//  public AuthenticationResponse register(User user) {
+//    User registeredUser = userDALService.create(user);
+//    var jwtToken = jwtService.generateToken((UserDetails) registeredUser);
+//    var refreshToken = jwtService.generateRefreshToken((UserDetails) registeredUser);
+//    saveUserToken(registeredUser, jwtToken);
+//
+//    return AuthenticationResponse
+//            .builder()
+//            .accessToken(jwtToken)
+//            .refreshToken(refreshToken)
+//            .build();
+//  }
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(
-        request.getEmail(),
-        request.getPassword()
-      )
-    );
+    System.out.println("jdhvsd");
+    final Collection<GrantedAuthority> authoritySet = new HashSet<GrantedAuthority>();
+
+    try {
+      authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(
+                      request.getEmail(),
+                      request.getPassword(),
+                      authoritySet
+              )
+      );
+    }
+    catch (Exception e) {
+      System.out.println("Here Ex "+e);
+//      throw new Exception(e);
+    }
+    System.out.println("Here1");
 
     User user = userDALService.findByEmail(request.getEmail()).orElseThrow();
     var jwtToken = jwtService.generateToken((UserDetails) user);

@@ -1,5 +1,8 @@
 package com.sampleApp.dal.interfaces;
 
+import com.sampleApp.auth.AuthenticationRequest;
+import com.sampleApp.auth.AuthenticationResponse;
+import com.sampleApp.auth.RegisterRequest;
 import com.sampleApp.models.User;
 
 import java.util.List;
@@ -13,5 +16,5 @@ public interface UserDAL {
 
   Optional<User> findByEmail(String email);
 
-  User create(User user);
+  AuthenticationResponse create(RegisterRequest user);
 }

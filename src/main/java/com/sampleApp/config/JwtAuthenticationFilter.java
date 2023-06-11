@@ -30,7 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           HttpServletResponse response,
           FilterChain filterChain
   ) throws ServletException, IOException {
+    System.out.println("DoIntFil");
     if (request.getServletPath().contains("/auth")) {
+      System.out.println("Out1");
       filterChain.doFilter(request, response);
       return;
     }
@@ -40,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     final String userEmail;
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      System.out.println("Out");
       filterChain.doFilter(request, response);
       return;
     }
@@ -53,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
               .map(t -> !t.isExpired() && !t.isRevoked())
               .orElse(false);
       if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+        System.out.println("int");
         UsernamePasswordAuthenticationToken authenticationToken =  new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,

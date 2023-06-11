@@ -1,3 +1,13 @@
+server:
+  port: 3000
+
+spring:
+  data:
+    mongodb:
+      database: shopping_db
+      port: 27017
+      host: localhost
+
 application:
   security:
     jwt:
