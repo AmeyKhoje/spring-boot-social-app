@@ -31,7 +31,6 @@ public class ProductController {
   }
 
   @GetMapping("/_all")
-  @PreAuthorize("")
   public List<Product> getAllProducts() {
     System.out.println("Ins");
     return productDAL.getAllProducts();
