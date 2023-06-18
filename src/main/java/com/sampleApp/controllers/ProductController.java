@@ -3,7 +3,9 @@ package com.sampleApp.controllers;
 import com.sampleApp.dal.implementations.ProductDALService;
 import com.sampleApp.dal.interfaces.ProductDAL;
 import com.sampleApp.models.Product;
+import io.micrometer.core.ipc.http.HttpSender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,7 @@ public class ProductController {
     this.productDAL = productDALService;
   }
   @PostMapping("/_new")
-  public Product create(Product product) {
+  public Product create(@RequestBody Product product) {
     return productDAL.create(product);
   }
 
