@@ -54,12 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     userEmail = jwtService.extractUsername(jwt);
 
     if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
       var isTokenValid = tokenDALService.findByToken(jwt)
               .map(t -> !t.isExpired() && !t.isRevoked())
               .orElse(false);
       if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
-        System.out.println("int");
+
         final Collection<GrantedAuthority> authoritySet = new HashSet<GrantedAuthority>();
         UsernamePasswordAuthenticationToken authenticationToken =  new UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -70,12 +71,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         authenticationToken.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
+        System.out.println(authenticationToken.isAuthenticated());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        System.out.println(authenticationToken);
+
       }
     }
 
     filterChain.doFilter(request, response);
-    System.out.println("no");
+
   }
 }

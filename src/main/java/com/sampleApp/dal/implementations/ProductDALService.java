@@ -5,6 +5,7 @@ import com.sampleApp.dal.interfaces.UserDAL;
 import com.sampleApp.models.Product;
 import com.sampleApp.models.User;
 import com.sampleApp.utils.DatabaseUtility;
+import com.sampleApp.validators.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -26,10 +27,24 @@ public class ProductDALService implements ProductDAL {
   @Autowired
   private UserDALService userDALService;
 
+//  private ProductValidator productValidator;
+
+
   @Override
   public Product create(Product product) {
-    mongoTemplate.save(product);
-    return product;
+    Boolean isValidProduct = new ProductValidator().isValidProduct(product);
+    if (isValidProduct == false) {
+      return null;
+    }
+    if (
+            databaseUtility.checkIfEntryExistsById(User.class, product.getCreatedBy(), "_id")
+    ) {
+      mongoTemplate.save(product);
+      return product;
+    }
+    else {
+      return null;
+    }
   }
 
   @Override

@@ -33,6 +33,9 @@ public enum Role {
             .collect(Collectors.toList());
 
     authorities.add(new SimpleGrantedAuthority("ROLE" + this.name()));
+    if (authorities.isEmpty()) {
+      return null;
+    }
     return authorities;
   }
 }

@@ -83,7 +83,14 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return role.getAuthorities();
+    if (this.role == null) {
+      return null;
+    }
+    Collection<? extends GrantedAuthority> authorities = role.getAuthorities();
+    if (authorities.isEmpty()) {
+      return null;
+    }
+    return authorities;
   }
 
   @Override

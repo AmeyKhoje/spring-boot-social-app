@@ -31,6 +31,7 @@ public class UserDALService implements UserDAL {
 
   @Override
   public List<User> getAllUsers() {
+    System.out.println("here");
     return mongoTemplate.findAll(User.class);
   }
 
@@ -58,20 +59,32 @@ public class UserDALService implements UserDAL {
     else return null;
   }
 
-
-
   @Override
   public AuthenticationResponse create(RegisterRequest request) {
-    System.out.println(request.getEmail());
-    User newUser = User.builder()
-                    .firstName(request.getFirstname())
-                    .lastName(request.getLastname())
-                    .email(request.getEmail())
-                    .mobile(request.getMobile())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .city(request.getCity())
-                    .build();
-    mongoTemplate.save(newUser);
-    return AuthenticationResponse.builder().build(); // Object will contain id as well automatically
+    Optional<User> user = findByEmail(request.getEmail());
+    if (user == null) {
+
+      User newUser = User.builder()
+              .firstName(request.getFirstName())
+              .lastName(request.getLastName())
+              .email(request.getEmail())
+              .mobile(request.getMobile())
+              .password(passwordEncoder.encode(request.getPassword()))
+              .city(request.getCity())
+              .build();
+      mongoTemplate.save(newUser);
+      return AuthenticationResponse
+              .builder()
+              .isAlreadyRegistered(false)
+              .success(true)
+              .build(); // Object will contain id as well automatically
+    }
+    else {
+      return AuthenticationResponse
+              .builder()
+              .success(false)
+              .isAlreadyRegistered(true)
+              .build();
+    }
   }
 }

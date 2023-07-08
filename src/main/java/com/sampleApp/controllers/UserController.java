@@ -9,6 +9,7 @@ import com.sampleApp.models.User;
 import com.sampleApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class UserController {
     this.userDALService = userDAL;
   }
 
+//  @PreAuthorize("hasAuthority('Admin')")
   @PostMapping("/_new")
   public ResponseEntity<AuthenticationResponse> create(@RequestBody RegisterRequest request) {
     return ResponseEntity.ok(userDALService.create(request));
@@ -37,6 +39,7 @@ public class UserController {
 
   @GetMapping("/_all")
   public List<User> getAllUsers() {
+    System.out.println("here");
     return userDALService.getAllUsers();
   }
 
