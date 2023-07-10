@@ -13,11 +13,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -33,9 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           HttpServletResponse response,
           FilterChain filterChain
   ) throws ServletException, IOException {
-    System.out.println("DoIntFil");
     if (request.getServletPath().contains("/auth")) {
-      System.out.println("Out1");
       filterChain.doFilter(request, response);
       return;
     }
@@ -45,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     final String userEmail;
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      System.out.println("Out "+ request);
       filterChain.doFilter(request, response);
       return;
     }
@@ -53,9 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     jwt = authHeader.substring(7);
     userEmail = jwtService.extractUsername(jwt);
 
-    if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    if (
+      userEmail != null &&
+      SecurityContextHolder.getContext().getAuthentication() == null
+    ) {
 
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
       var isTokenValid = tokenDALService.findByToken(jwt)
               .map(t -> !t.isExpired() && !t.isRevoked())
               .orElse(false);
@@ -71,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         authenticationToken.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
-        System.out.println(authenticationToken.isAuthenticated());
+
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
       }

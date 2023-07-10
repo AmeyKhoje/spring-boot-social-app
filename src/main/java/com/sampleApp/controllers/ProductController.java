@@ -3,10 +3,10 @@ package com.sampleApp.controllers;
 import com.sampleApp.dal.implementations.ProductDALService;
 import com.sampleApp.dal.interfaces.ProductDAL;
 import com.sampleApp.models.Product;
+import com.sampleApp.utils.DatabaseUtility;
 import io.micrometer.core.ipc.http.HttpSender;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +17,9 @@ import java.util.List;
 @RequestMapping("products")
 public class ProductController {
   private final ProductDAL productDAL;
+
+  @Autowired
+  private DatabaseUtility databaseUtility;
 
   @Autowired
   public ProductController(ProductDALService productDALService) {
@@ -39,12 +42,27 @@ public class ProductController {
   }
 
   @GetMapping("/{userId}/_list")
-  public List<Product> getAllProductsCreatedByLoggedInUser(@PathVariable String userId) {
-    return productDAL.getAllProductsCreatedByLoggedInUser(userId);
+  public List<Product> getAllProductsCreatedByLoggedInUser(
+          HttpServletRequest request,
+          @PathVariable String userId
+  ) {
+    boolean isValidUser =
+            databaseUtility.checkSameUser(
+                    userId,
+                    request.getHeader("Authorization").substring(7)
+            );
+
+    if (isValidUser) {
+      return productDAL.getAllProductsCreatedByUser(userId);
+    }
+
+    return null;
+
   }
 
   @GetMapping("/{productId}")
   public Object getProductById(@PathVariable String productId) {
+
     return productDAL.getProductById(productId);
   }
 }

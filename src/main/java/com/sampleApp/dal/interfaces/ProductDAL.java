@@ -9,7 +9,7 @@ public interface ProductDAL {
   Object delete(String productId);
 
   List<Product> getAllProducts();
-  List<Product> getAllProductsCreatedByLoggedInUser(String userId);
+  List<Product> getAllProductsCreatedByUser(String userId);
 
   Object getProductById(String productId);
 }

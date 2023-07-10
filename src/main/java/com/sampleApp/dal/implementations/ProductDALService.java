@@ -73,9 +73,13 @@ public class ProductDALService implements ProductDAL {
   }
 
   @Override
-  public List<Product> getAllProductsCreatedByLoggedInUser(String userId) {
+  public List<Product> getAllProductsCreatedByUser(String userId) {
     List<Product> products = null;
-    if (databaseUtility.checkIfEntryExistsById(User.class, userId, "userId")) {
+    if (
+      databaseUtility.checkIfEntryExistsById(
+        User.class, userId, "userId"
+      )
+    ) {
       Query query = new Query();
       query.addCriteria(Criteria.where("createdBy").is(userId));
 
